@@ -30,6 +30,17 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddAutoMapper(typeof(ProductProfile));
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddAutoMapper(
+    typeof(ProductProfile),
+    typeof(CategoryProfile)
+);
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddAutoMapper(
+    typeof(ProductProfile),
+    typeof(CategoryProfile),
+    typeof(UserProfile)
+);
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

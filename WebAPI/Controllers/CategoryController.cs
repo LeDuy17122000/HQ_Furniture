@@ -1,5 +1,5 @@
-﻿using Domain.Models;
-using Infrastructure.Repositories.Interfaces;
+﻿using Application.DTOs.Category;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -8,27 +8,23 @@ namespace WebAPI.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository repository;
+        private readonly ICategoryService service;
 
-        public CategoryController(ICategoryRepository repository)
+        public CategoryController(ICategoryService service)
         {
-            this.repository = repository;
+            this.service = service;
         }
 
-        // GET
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var data = await repository.GetAllAsync();
-
-            return Ok(data);
+            return Ok(await service.GetAllAsync());
         }
 
-        // GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var data = await repository.GetByIdAsync(id);
+            var data = await service.GetByIdAsync(id);
 
             if (data == null)
                 return NotFound();
@@ -36,37 +32,26 @@ namespace WebAPI.Controllers
             return Ok(data);
         }
 
-        // POST
         [HttpPost]
-        public async Task<IActionResult> Add(Category category)
+        public async Task<IActionResult> Add(CategoryCreateDto dto)
         {
-            await repository.AddAsync(category);
-            await repository.SaveAsync();
+            await service.AddAsync(dto);
 
-            return Ok(category);
+            return Ok();
         }
 
-        // PUT
         [HttpPut]
-        public async Task<IActionResult> Update(Category category)
+        public async Task<IActionResult> Update(CategoryUpdateDto dto)
         {
-            await repository.UpdateAsync(category);
-            await repository.SaveAsync();
+            await service.UpdateAsync(dto);
 
-            return Ok(category);
+            return Ok();
         }
 
-        // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var cate = await repository.GetByIdAsync(id);
-
-            if (cate == null)
-                return NotFound();
-
-            await repository.DeleteAsync(cate);
-            await repository.SaveAsync();
+            await service.DeleteAsync(id);
 
             return Ok();
         }

@@ -1,4 +1,6 @@
-﻿using Domain.Models;
+﻿using Application.DTOs.User;
+using Application.Interfaces;
+using Domain.Models;
 using Infrastructure.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,82 +10,49 @@ namespace WebAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository repository;
+        private readonly IUserService service;
 
-        public UserController(IUserRepository repository)
+        public UserController(IUserService service)
         {
-            this.repository = repository;
+            this.service = service;
         }
 
         // GET ALL
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await repository.GetAllAsync());
+            return Ok(await service.GetAllAsync());
         }
-
         // GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var user = await repository.GetByIdAsync(id);
+            var data = await service.GetByIdAsync(id);
 
-            if (user == null)
+            if (data == null)
                 return NotFound();
 
-            return Ok(user);
-        }
-
-        // GET USER BY ROLE
-        [HttpGet("Role/{roleId}")]
-        public async Task<IActionResult> GetByRole(int roleId)
-        {
-            var data = await repository.GetByRoleAsync(roleId);
-
             return Ok(data);
         }
-
-        // SEARCH
-        [HttpGet("Search")]
-        public async Task<IActionResult> Search(string keyword)
-        {
-            var data = await repository.SearchAsync(keyword);
-
-            return Ok(data);
-        }
-
-        // POST
+        // ADD
         [HttpPost]
-        public async Task<IActionResult> Add(User user)
+        public async Task<IActionResult> Add(UserCreateDto dto)
         {
-            await repository.AddAsync(user);
-            await repository.SaveAsync();
-
-            return Ok(user);
+            await service.AddAsync(dto);
+            return Ok();
         }
-
-        // PUT
+        // UPDATE
         [HttpPut]
-        public async Task<IActionResult> Update(User user)
+        public async Task<IActionResult> Update(UserUpdateDto dto)
         {
-            await repository.UpdateAsync(user);
-            await repository.SaveAsync();
-
-            return Ok(user);
+            await service.UpdateAsync(dto);
+            return Ok();
         }
-
         // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var user = await repository.GetByIdAsync(id);
-
-            if (user == null)
-                return NotFound();
-
-            await repository.DeleteAsync(user);
-            await repository.SaveAsync();
-
+            await service.DeleteAsync(id);
             return Ok();
         }
     }

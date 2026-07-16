@@ -1,5 +1,5 @@
-﻿using Domain.Models;
-using Infrastructure.Repositories.Interfaces;
+﻿using Application.DTOs.Permission;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -8,58 +8,50 @@ namespace WebAPI.Controllers
     [ApiController]
     public class PermissionController : ControllerBase
     {
-        private readonly IPermissionRepository repository;
+        private readonly IPermissionService service;
 
-        public PermissionController(IPermissionRepository repository)
+        public PermissionController(IPermissionService service)
         {
-            this.repository = repository;
+            this.service = service;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await repository.GetAllAsync());
+            return Ok(await service.GetAllAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var permission = await repository.GetByIdAsync(id);
+            var data = await service.GetByIdAsync(id);
 
-            if (permission == null)
+            if (data == null)
                 return NotFound();
 
-            return Ok(permission);
+            return Ok(data);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(Permission permission)
+        public async Task<IActionResult> Add(PermissionCreateDto dto)
         {
-            await repository.AddAsync(permission);
-            await repository.SaveAsync();
+            await service.AddAsync(dto);
 
-            return Ok(permission);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(Permission permission)
+        public async Task<IActionResult> Update(PermissionUpdateDto dto)
         {
-            await repository.UpdateAsync(permission);
-            await repository.SaveAsync();
+            await service.UpdateAsync(dto);
 
-            return Ok(permission);
+            return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var permission = await repository.GetByIdAsync(id);
-
-            if (permission == null)
-                return NotFound();
-
-            await repository.DeleteAsync(permission);
-            await repository.SaveAsync();
+            await service.DeleteAsync(id);
 
             return Ok();
         }

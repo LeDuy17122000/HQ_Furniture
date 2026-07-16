@@ -31,16 +31,17 @@ builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>(
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddAutoMapper(typeof(ProductProfile));
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddAutoMapper(
-    typeof(ProductProfile),
-    typeof(CategoryProfile)
-);
+builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAutoMapper(
     typeof(ProductProfile),
     typeof(CategoryProfile),
-    typeof(UserProfile)
+    typeof(UserProfile),
+    typeof(RoleProfile), 
+    typeof(PermissionProfile)
 );
+builder.Services.AddScoped<IRoleService, RoleService>();
+
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

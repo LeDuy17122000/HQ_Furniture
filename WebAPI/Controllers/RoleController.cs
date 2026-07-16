@@ -1,5 +1,5 @@
-﻿using Domain.Models;
-using Infrastructure.Repositories.Interfaces;
+﻿using Application.DTOs.Role;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -8,58 +8,50 @@ namespace WebAPI.Controllers
     [ApiController]
     public class RoleController : ControllerBase
     {
-        private readonly IRoleRepository repository;
+        private readonly IRoleService service;
 
-        public RoleController(IRoleRepository repository)
+        public RoleController(IRoleService service)
         {
-            this.repository = repository;
+            this.service = service;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await repository.GetAllAsync());
+            return Ok(await service.GetAllAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var role = await repository.GetByIdAsync(id);
+            var data = await service.GetByIdAsync(id);
 
-            if (role == null)
+            if (data == null)
                 return NotFound();
 
-            return Ok(role);
+            return Ok(data);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(Role role)
+        public async Task<IActionResult> Add(RoleCreateDto dto)
         {
-            await repository.AddAsync(role);
-            await repository.SaveAsync();
+            await service.AddAsync(dto);
 
-            return Ok(role);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(Role role)
+        public async Task<IActionResult> Update(RoleUpdateDto dto)
         {
-            await repository.UpdateAsync(role);
-            await repository.SaveAsync();
+            await service.UpdateAsync(dto);
 
-            return Ok(role);
+            return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var role = await repository.GetByIdAsync(id);
-
-            if (role == null)
-                return NotFound();
-
-            await repository.DeleteAsync(role);
-            await repository.SaveAsync();
+            await service.DeleteAsync(id);
 
             return Ok();
         }

@@ -1,5 +1,5 @@
-﻿using Domain.Models;
-using Infrastructure.Repositories.Interfaces;
+﻿using Application.DTOs.RolePermission;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -8,33 +8,37 @@ namespace WebAPI.Controllers
     [ApiController]
     public class RolePermissionController : ControllerBase
     {
-        private readonly IRolePermissionRepository repository;
+        private readonly IRolePermissionService service;
 
-        public RolePermissionController(IRolePermissionRepository repository)
+        public RolePermissionController(IRolePermissionService service)
         {
-            this.repository = repository;
+            this.service = service;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await repository.GetAllAsync());
+            return Ok(await service.GetAllAsync());
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Add(RolePermission rolePermission)
+        [HttpGet("Role/{roleId}")]
+        public async Task<IActionResult> GetByRole(int roleId)
         {
-            await repository.AddAsync(rolePermission);
-            await repository.SaveAsync();
-
-            return Ok(rolePermission);
+            return Ok(await service.GetByRoleAsync(roleId));
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete(RolePermission rolePermission)
+        [HttpPost("Assign")]
+        public async Task<IActionResult> Assign(AssignPermissionDto dto)
         {
-            await repository.DeleteAsync(rolePermission);
-            await repository.SaveAsync();
+            await service.AssignAsync(dto);
+
+            return Ok();
+        }
+
+        [HttpDelete("{roleId}/{permissionId}")]
+        public async Task<IActionResult> Delete(int roleId, int permissionId)
+        {
+            await service.RemoveAsync(roleId, permissionId);
 
             return Ok();
         }

@@ -38,10 +38,12 @@ builder.Services.AddAutoMapper(
     typeof(CategoryProfile),
     typeof(UserProfile),
     typeof(RoleProfile), 
-    typeof(PermissionProfile)
+    typeof(PermissionProfile),
+    typeof(RolePermissionProfile)
+
 );
 builder.Services.AddScoped<IRoleService, RoleService>();
-
+builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

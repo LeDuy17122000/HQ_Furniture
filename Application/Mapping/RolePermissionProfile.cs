@@ -9,10 +9,11 @@ namespace Application.Mapping
         public RolePermissionProfile()
         {
             CreateMap<RolePermission, RolePermissionDto>()
-                .ForMember(x => x.RoleName,
-                    opt => opt.MapFrom(s => s.Role!.RoleName))
-                .ForMember(x => x.PermissionName,
-                    opt => opt.MapFrom(s => s.Permission!.PermissionName));
+                .ForMember(d => d.RoleName,
+                    o => o.MapFrom(s => s.Role!.RoleName))
+
+                .ForMember(d => d.PermissionName,
+                    o => o.MapFrom(s => s.Permission!.PermissionName));
         }
     }
 }

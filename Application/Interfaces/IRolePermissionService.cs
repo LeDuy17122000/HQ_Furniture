@@ -11,6 +11,5 @@ namespace Application.Interfaces
         Task AssignAsync(AssignPermissionDto dto);
 
         Task RemoveAsync(int roleId, int permissionId);
-
     }
 }

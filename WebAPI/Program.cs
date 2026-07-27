@@ -32,6 +32,7 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddAutoMapper(typeof(ProductProfile));
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAutoMapper(
     typeof(ProductProfile),

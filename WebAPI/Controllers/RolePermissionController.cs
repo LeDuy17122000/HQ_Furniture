@@ -32,15 +32,15 @@ namespace WebAPI.Controllers
         {
             await service.AssignAsync(dto);
 
-            return Ok();
+            return Ok("Assign Success");
         }
 
         [HttpDelete("{roleId}/{permissionId}")]
-        public async Task<IActionResult> Delete(int roleId, int permissionId)
+        public async Task<IActionResult> Remove(int roleId, int permissionId)
         {
             await service.RemoveAsync(roleId, permissionId);
 
-            return Ok();
+            return Ok("Remove Success");
         }
     }
 }

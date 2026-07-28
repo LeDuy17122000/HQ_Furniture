@@ -34,13 +34,16 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+
 builder.Services.AddAutoMapper(
     typeof(ProductProfile),
     typeof(CategoryProfile),
     typeof(UserProfile),
     typeof(RoleProfile), 
     typeof(PermissionProfile),
-    typeof(RolePermissionProfile)
+    typeof(RolePermissionProfile),
+    typeof(ReviewProfile)
 
 );
 builder.Services.AddScoped<IRoleService, RoleService>();

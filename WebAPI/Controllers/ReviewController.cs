@@ -1,5 +1,5 @@
-﻿using Domain.Models;
-using Infrastructure.Repositories.Interfaces;
+﻿using Application.DTOs.Review;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -8,73 +8,83 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
-        private readonly IReviewRepository repository;
+        private readonly IReviewService service;
 
-        public ReviewController(IReviewRepository repository)
+        public ReviewController(IReviewService service)
         {
-            this.repository = repository;
+            this.service = service;
         }
 
+        // GET ALL
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var data = await repository.GetAllAsync();
-            return Ok(data);
+            return Ok(await service.GetAllAsync());
         }
 
+        // GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var data = await repository.GetByIdAsync(id);
-
-            if (data == null)
-                return NotFound();
-
-            return Ok(data);
-        }
-
-        [HttpGet("Product/{productId}")]
-        public async Task<IActionResult> GetByProduct(int productId)
-        {
-            var data = await repository.GetByProductAsync(productId);
-            return Ok(data);
-        }
-
-        [HttpGet("User/{userId}")]
-        public async Task<IActionResult> GetByUser(int userId)
-        {
-            var data = await repository.GetByUserAsync(userId);
-            return Ok(data);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Add(Review review)
-        {
-            await repository.AddAsync(review);
-            await repository.SaveAsync();
-
-            return Ok(review);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> Update(Review review)
-        {
-            await repository.UpdateAsync(review);
-            await repository.SaveAsync();
-
-            return Ok(review);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var review = await repository.GetByIdAsync(id);
+            var review = await service.GetByIdAsync(id);
 
             if (review == null)
                 return NotFound();
 
-            await repository.DeleteAsync(review);
-            await repository.SaveAsync();
+            return Ok(review);
+        }
+
+        // GET BY PRODUCT
+        [HttpGet("Product/{productId}")]
+        public async Task<IActionResult> GetByProduct(int productId)
+        {
+            return Ok(await service.GetByProductAsync(productId));
+        }
+
+        // GET BY USER
+        [HttpGet("User/{userId}")]
+        public async Task<IActionResult> GetByUser(int userId)
+        {
+            return Ok(await service.GetByUserAsync(userId));
+        }
+
+        // GET AVERAGE
+        [HttpGet("Average/{productId}")]
+        public async Task<IActionResult> GetAverage(int productId)
+        {
+            return Ok(await service.GetAverageRatingAsync(productId));
+        }
+
+        // GET STATISTIC
+        [HttpGet("Statistic/{productId}")]
+        public async Task<IActionResult> GetStatistic(int productId)
+        {
+            return Ok(await service.GetStatisticAsync(productId));
+        }
+
+        // POST
+        [HttpPost]
+        public async Task<IActionResult> Add(ReviewCreateDto dto)
+        {
+            await service.AddAsync(dto);
+
+            return Ok();
+        }
+
+        // PUT
+        [HttpPut]
+        public async Task<IActionResult> Update(ReviewUpdateDto dto)
+        {
+            await service.UpdateAsync(dto);
+
+            return Ok();
+        }
+
+        // DELETE
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await service.DeleteAsync(id);
 
             return Ok();
         }

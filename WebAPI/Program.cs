@@ -22,6 +22,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IProductImageService, ProductImageService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
@@ -29,13 +31,18 @@ builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-builder.Services.AddAutoMapper(typeof(ProductProfile));
+builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
+builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
 builder.Services.AddAutoMapper(
     typeof(ProductProfile),
     typeof(CategoryProfile),
@@ -43,7 +50,8 @@ builder.Services.AddAutoMapper(
     typeof(RoleProfile), 
     typeof(PermissionProfile),
     typeof(RolePermissionProfile),
-    typeof(ReviewProfile)
+    typeof(ReviewProfile) 
+  
 
 );
 builder.Services.AddScoped<IRoleService, RoleService>();

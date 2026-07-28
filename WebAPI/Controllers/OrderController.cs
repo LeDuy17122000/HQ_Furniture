@@ -1,5 +1,5 @@
-﻿using Domain.Models;
-using Infrastructure.Repositories.Interfaces;
+﻿using Application.DTOs.Order;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -8,25 +8,25 @@ namespace WebAPI.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly IOrderRepository repository;
+        private readonly IOrderService service;
 
-        public OrderController(IOrderRepository repository)
+        public OrderController(IOrderService service)
         {
-            this.repository = repository;
+            this.service = service;
         }
 
         // GET ALL
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await repository.GetAllAsync());
+            return Ok(await service.GetAllAsync());
         }
 
         // GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var order = await repository.GetByIdAsync(id);
+            var order = await service.GetByIdAsync(id);
 
             if (order == null)
                 return NotFound();
@@ -38,49 +38,41 @@ namespace WebAPI.Controllers
         [HttpGet("User/{userId}")]
         public async Task<IActionResult> GetByUser(int userId)
         {
-            return Ok(await repository.GetByUserAsync(userId));
+            return Ok(await service.GetByUserAsync(userId));
         }
 
         // GET BY STATUS
         [HttpGet("Status/{status}")]
         public async Task<IActionResult> GetByStatus(string status)
         {
-            return Ok(await repository.GetByStatusAsync(status));
+            return Ok(await service.GetByStatusAsync(status));
         }
 
-        // POST
+        // CREATE ORDER
         [HttpPost]
-        public async Task<IActionResult> Add(Order order)
+        public async Task<IActionResult> Add(OrderCreateDto dto)
         {
-            await repository.AddAsync(order);
-            await repository.SaveAsync();
+            await service.AddAsync(dto);
 
-            return Ok(order);
+            return Ok("Order created successfully.");
         }
 
-        // PUT
+        // UPDATE
         [HttpPut]
-        public async Task<IActionResult> Update(Order order)
+        public async Task<IActionResult> Update(OrderUpdateDto dto)
         {
-            await repository.UpdateAsync(order);
-            await repository.SaveAsync();
+            await service.UpdateAsync(dto);
 
-            return Ok(order);
+            return Ok("Order updated successfully.");
         }
 
         // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var order = await repository.GetByIdAsync(id);
+            await service.DeleteAsync(id);
 
-            if (order == null)
-                return NotFound();
-
-            await repository.DeleteAsync(order);
-            await repository.SaveAsync();
-
-            return Ok();
+            return Ok("Order deleted successfully.");
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Domain.Models;
-using Infrastructure.Repositories.Interfaces;
+﻿using Application.DTOs.ProductImage;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -8,72 +8,74 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ProductImageController : ControllerBase
     {
-        private readonly IProductImageRepository repository;
+        private readonly IProductImageService service;
 
-        public ProductImageController(IProductImageRepository repository)
+        public ProductImageController(IProductImageService service)
         {
-            this.repository = repository;
+            this.service = service;
         }
 
         // GET ALL
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var data = await repository.GetAllAsync();
-            return Ok(data);
+            return Ok(await service.GetAllAsync());
         }
 
         // GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var data = await repository.GetByIdAsync(id);
+            var image = await service.GetByIdAsync(id);
 
-            if (data == null)
+            if (image == null)
                 return NotFound();
 
-            return Ok(data);
+            return Ok(image);
         }
 
-        // GET IMAGE BY PRODUCT
+        // GET BY PRODUCT
         [HttpGet("Product/{productId}")]
         public async Task<IActionResult> GetByProduct(int productId)
         {
-            var data = await repository.GetByProductAsync(productId);
-            return Ok(data);
+            return Ok(await service.GetByProductAsync(productId));
+        }
+
+        // GET MAIN IMAGE
+        [HttpGet("Main/{productId}")]
+        public async Task<IActionResult> GetMainImage(int productId)
+        {
+            var image = await service.GetMainImageAsync(productId);
+
+            if (image == null)
+                return NotFound();
+
+            return Ok(image);
         }
 
         // POST
         [HttpPost]
-        public async Task<IActionResult> Add(ProductImage image)
+        public async Task<IActionResult> Add(ProductImageCreateDto dto)
         {
-            await repository.AddAsync(image);
-            await repository.SaveAsync();
+            await service.AddAsync(dto);
 
-            return Ok(image);
+            return Ok();
         }
 
         // PUT
         [HttpPut]
-        public async Task<IActionResult> Update(ProductImage image)
+        public async Task<IActionResult> Update(ProductImageUpdateDto dto)
         {
-            await repository.UpdateAsync(image);
-            await repository.SaveAsync();
+            await service.UpdateAsync(dto);
 
-            return Ok(image);
+            return Ok();
         }
 
         // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var image = await repository.GetByIdAsync(id);
-
-            if (image == null)
-                return NotFound();
-
-            await repository.DeleteAsync(image);
-            await repository.SaveAsync();
+            await service.DeleteAsync(id);
 
             return Ok();
         }

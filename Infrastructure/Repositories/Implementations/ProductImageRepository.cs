@@ -11,14 +11,23 @@ namespace Infrastructure.Repositories.Implementations
         public ProductImageRepository(AppDbContext context)
             : base(context)
         {
-
         }
 
         public async Task<List<ProductImage>> GetByProductAsync(int productId)
         {
-            return await dbSet
+            return await context.ProductImages
+                .Include(x => x.Product)
                 .Where(x => x.ProductId == productId)
                 .ToListAsync();
+        }
+
+        public async Task<ProductImage?> GetMainImageAsync(int productId)
+        {
+            return await context.ProductImages
+                .Include(x => x.Product)
+                .FirstOrDefaultAsync(x =>
+                    x.ProductId == productId &&
+                    x.IsMain);
         }
     }
 }

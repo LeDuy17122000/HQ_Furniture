@@ -1,6 +1,6 @@
 ﻿namespace Application.DTOs.RolePermission
 {
-    public class AssignPermissionDto
+    public class RolePermissionAssignDto
     {
         public int RoleId { get; set; }
 

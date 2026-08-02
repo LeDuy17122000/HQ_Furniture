@@ -28,19 +28,36 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("Assign")]
-        public async Task<IActionResult> Assign(AssignPermissionDto dto)
+        public async Task<IActionResult> Assign(RolePermissionAssignDto dto)
         {
-            await service.AssignAsync(dto);
+            await service.AssignPermissionAsync(dto);
 
             return Ok("Assign Success");
         }
 
-        [HttpDelete("{roleId}/{permissionId}")]
+        [HttpDelete("Remove/{roleId}/{permissionId}")]
         public async Task<IActionResult> Remove(int roleId, int permissionId)
         {
-            await service.RemoveAsync(roleId, permissionId);
+            await service.RemovePermissionAsync(roleId, permissionId);
 
             return Ok("Remove Success");
         }
+       
+
+     
+
+        // Lấy tất cả Role có Permission
+        [HttpGet("Permission/{permissionId}")]
+        public async Task<IActionResult> GetByPermission(int permissionId)
+        {
+            var data = await service.GetByPermissionAsync(permissionId);
+
+            return Ok(data);
+        }
+
+   
+       
+
+      
     }
 }

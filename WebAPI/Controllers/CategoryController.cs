@@ -1,9 +1,11 @@
 ﻿using Application.DTOs.Category;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin,Employee")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase

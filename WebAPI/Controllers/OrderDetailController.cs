@@ -1,5 +1,5 @@
-﻿using Domain.Models;
-using Infrastructure.Repositories.Interfaces;
+﻿using Application.DTOs.Order;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -8,79 +8,50 @@ namespace WebAPI.Controllers
     [ApiController]
     public class OrderDetailController : ControllerBase
     {
-        private readonly IOrderDetailRepository repository;
+        private readonly IOrderDetailService service;
 
-        public OrderDetailController(IOrderDetailRepository repository)
+        public OrderDetailController(IOrderDetailService service)
         {
-            this.repository = repository;
+            this.service = service;
         }
 
-        // GET ALL
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            return Ok(await repository.GetAllAsync());
-        }
-
-        // GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var detail = await repository.GetByIdAsync(id);
+            var data = await service.GetByIdAsync(id);
 
-            if (detail == null)
+            if (data == null)
                 return NotFound();
 
-            return Ok(detail);
+            return Ok(data);
         }
 
-        // GET BY ORDER
         [HttpGet("Order/{orderId}")]
         public async Task<IActionResult> GetByOrder(int orderId)
         {
-            return Ok(await repository.GetByOrderAsync(orderId));
+            return Ok(await service.GetByOrderAsync(orderId));
         }
 
-        // GET BY PRODUCT
         [HttpGet("Product/{productId}")]
         public async Task<IActionResult> GetByProduct(int productId)
         {
-            return Ok(await repository.GetByProductAsync(productId));
+            return Ok(await service.GetByProductAsync(productId));
         }
 
-        // POST
-        [HttpPost]
-        public async Task<IActionResult> Add(OrderDetail detail)
-        {
-            await repository.AddAsync(detail);
-            await repository.SaveAsync();
-
-            return Ok(detail);
-        }
-
-        // PUT
         [HttpPut]
-        public async Task<IActionResult> Update(OrderDetail detail)
+        public async Task<IActionResult> Update(OrderDetailUpdateDto dto)
         {
-            await repository.UpdateAsync(detail);
-            await repository.SaveAsync();
+            await service.UpdateAsync(dto);
 
-            return Ok(detail);
+            return Ok("Updated successfully.");
         }
 
-        // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var detail = await repository.GetByIdAsync(id);
+            await service.DeleteAsync(id);
 
-            if (detail == null)
-                return NotFound();
-
-            await repository.DeleteAsync(detail);
-            await repository.SaveAsync();
-
-            return Ok();
+            return Ok("Deleted successfully.");
         }
     }
 }

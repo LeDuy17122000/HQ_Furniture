@@ -70,5 +70,11 @@ namespace Application.Services
 
             await repository.SaveAsync();
         }
+        public async Task<bool> HasPermissionAsync(int userId,string permissionName)
+        {
+            return await repository.HasPermissionAsync(
+                userId,
+                permissionName);
+        }
     }
 }

@@ -39,7 +39,7 @@ namespace Application.Services
         public async Task AddAsync(UserCreateDto dto)
         {
             var user = mapper.Map<User>(dto);
-
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             await repository.AddAsync(user);
             await repository.SaveAsync();
         }
@@ -66,6 +66,10 @@ namespace Application.Services
 
             await repository.DeleteAsync(user);
             await repository.SaveAsync();
+        }
+        public async Task ChangeRoleAsync(UserChangeRoleDto dto)
+        {
+            await repository.ChangeRoleAsync(dto.UserId, dto.RoleId);
         }
     }
 }

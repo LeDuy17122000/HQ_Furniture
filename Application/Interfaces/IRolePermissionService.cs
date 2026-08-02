@@ -6,10 +6,12 @@ namespace Application.Interfaces
     {
         Task<List<RolePermissionDto>> GetAllAsync();
 
-        Task<List<RolePermissionDto>> GetByRoleAsync(int roleId);
+        Task<List<RolePermissionViewDto>> GetByRoleAsync(int roleId);
 
-        Task AssignAsync(AssignPermissionDto dto);
+        Task<List<RolePermissionViewDto>> GetByPermissionAsync(int permissionId);
 
-        Task RemoveAsync(int roleId, int permissionId);
+        Task AssignPermissionAsync(RolePermissionAssignDto dto);
+
+        Task RemovePermissionAsync(int roleId, int permissionId);
     }
 }

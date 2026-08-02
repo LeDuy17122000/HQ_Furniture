@@ -13,5 +13,6 @@ namespace Application.Interfaces
         Task UpdateAsync(UserUpdateDto dto);
 
         Task DeleteAsync(int id);
+        Task ChangeRoleAsync(UserChangeRoleDto dto);
     }
 }

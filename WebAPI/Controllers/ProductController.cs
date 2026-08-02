@@ -1,9 +1,12 @@
 ﻿using Application.DTOs.Product;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Authorization;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -15,16 +18,16 @@ namespace WebAPI.Controllers
             this.service = service;
         }
 
-        // GET ALL
         [HttpGet]
+        [HasPermission("Product.View")]
         public async Task<IActionResult> GetAll()
         {
             var data = await service.GetAllAsync();
             return Ok(data);
         }
 
-        // GET BY ID
         [HttpGet("{id}")]
+        [HasPermission("Product.View")]
         public async Task<IActionResult> GetById(int id)
         {
             var data = await service.GetByIdAsync(id);
@@ -35,8 +38,8 @@ namespace WebAPI.Controllers
             return Ok(data);
         }
 
-        // GET BY CATEGORY
         [HttpGet("Category/{categoryId}")]
+        [HasPermission("Product.View")]
         public async Task<IActionResult> GetByCategory(int categoryId)
         {
             var data = await service.GetByCategoryAsync(categoryId);
@@ -44,8 +47,8 @@ namespace WebAPI.Controllers
             return Ok(data);
         }
 
-        // SEARCH
         [HttpGet("Search")]
+        [HasPermission("Product.View")]
         public async Task<IActionResult> Search(string keyword)
         {
             var data = await service.SearchAsync(keyword);
@@ -53,8 +56,8 @@ namespace WebAPI.Controllers
             return Ok(data);
         }
 
-        // POST
         [HttpPost]
+        [HasPermission("Product.Create")]
         public async Task<IActionResult> Add(ProductCreateDto dto)
         {
             await service.AddAsync(dto);
@@ -65,8 +68,8 @@ namespace WebAPI.Controllers
             });
         }
 
-        // PUT
         [HttpPut]
+        [HasPermission("Product.Update")]
         public async Task<IActionResult> Update(ProductUpdateDto dto)
         {
             await service.UpdateAsync(dto);
@@ -77,8 +80,8 @@ namespace WebAPI.Controllers
             });
         }
 
-        // DELETE
         [HttpDelete("{id}")]
+        [HasPermission("Product.Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             await service.DeleteAsync(id);

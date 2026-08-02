@@ -1,9 +1,11 @@
 ﻿using Application.DTOs.Review;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [Route("api/[controller]")]
     [ApiController]
     public class ReviewController : ControllerBase

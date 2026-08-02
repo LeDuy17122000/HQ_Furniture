@@ -13,5 +13,6 @@ namespace Application.Interfaces
         Task UpdateAsync(PermissionUpdateDto dto);
 
         Task DeleteAsync(int id);
+        Task<bool> HasPermissionAsync(int userId, string permissionName);
     }
 }

@@ -8,7 +8,6 @@ namespace Application.Services
     public class RolePermissionService : IRolePermissionService
     {
         private readonly IRolePermissionRepository repository;
-
         private readonly IMapper mapper;
 
         public RolePermissionService(
@@ -26,21 +25,34 @@ namespace Application.Services
             return mapper.Map<List<RolePermissionDto>>(data);
         }
 
-        public async Task<List<RolePermissionDto>> GetByRoleAsync(int roleId)
+        public async Task<List<RolePermissionViewDto>> GetByRoleAsync(int roleId)
         {
             var data = await repository.GetByRoleAsync(roleId);
 
-            return mapper.Map<List<RolePermissionDto>>(data);
+            return mapper.Map<List<RolePermissionViewDto>>(data);
         }
 
-        public async Task AssignAsync(AssignPermissionDto dto)
+        public async Task<List<RolePermissionViewDto>> GetByPermissionAsync(int permissionId)
         {
-            await repository.AssignAsync(dto.RoleId, dto.PermissionIds);
+            var data = await repository.GetByPermissionAsync(permissionId);
+
+            return mapper.Map<List<RolePermissionViewDto>>(data);
         }
 
-        public async Task RemoveAsync(int roleId, int permissionId)
+        public async Task AssignPermissionAsync(RolePermissionAssignDto dto)
         {
-            await repository.RemoveAsync(roleId, permissionId);
+            await repository.AssignAsync(
+                dto.RoleId,
+                dto.PermissionIds);
+        }
+
+        public async Task RemovePermissionAsync(
+            int roleId,
+            int permissionId)
+        {
+            await repository.RemoveAsync(
+                roleId,
+                permissionId);
         }
     }
 }

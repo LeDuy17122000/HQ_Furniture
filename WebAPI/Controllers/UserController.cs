@@ -1,11 +1,12 @@
 ﻿using Application.DTOs.User;
 using Application.Interfaces;
-using Domain.Models;
-using Infrastructure.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Authorization;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -17,14 +18,19 @@ namespace WebAPI.Controllers
             this.service = service;
         }
 
-        // GET ALL
+        // ================= GET ALL =================
         [HttpGet]
+        [HasPermission("User.View")]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await service.GetAllAsync());
+            var data = await service.GetAllAsync();
+
+            return Ok(data);
         }
-        // GET BY ID
+
+        // ================= GET BY ID =================
         [HttpGet("{id}")]
+        [HasPermission("User.View")]
         public async Task<IActionResult> GetById(int id)
         {
             var data = await service.GetByIdAsync(id);
@@ -34,26 +40,57 @@ namespace WebAPI.Controllers
 
             return Ok(data);
         }
-        // ADD
+
+        // ================= CREATE =================
         [HttpPost]
+        [HasPermission("User.Create")]
         public async Task<IActionResult> Add(UserCreateDto dto)
         {
             await service.AddAsync(dto);
-            return Ok();
+
+            return Ok(new
+            {
+                Message = "User created successfully."
+            });
         }
-        // UPDATE
+
+        // ================= UPDATE =================
         [HttpPut]
+        [HasPermission("User.Update")]
         public async Task<IActionResult> Update(UserUpdateDto dto)
         {
             await service.UpdateAsync(dto);
-            return Ok();
+
+            return Ok(new
+            {
+                Message = "User updated successfully."
+            });
         }
-        // DELETE
+
+        // ================= DELETE =================
         [HttpDelete("{id}")]
+        [HasPermission("User.Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             await service.DeleteAsync(id);
-            return Ok();
+
+            return Ok(new
+            {
+                Message = "User deleted successfully."
+            });
+        }
+
+        // ================= CHANGE ROLE =================
+        [HttpPut("ChangeRole")]
+        [HasPermission("User.UpdateRole")]
+        public async Task<IActionResult> ChangeRole(UserChangeRoleDto dto)
+        {
+            await service.ChangeRoleAsync(dto);
+
+            return Ok(new
+            {
+                Message = "Change role successfully."
+            });
         }
     }
 }

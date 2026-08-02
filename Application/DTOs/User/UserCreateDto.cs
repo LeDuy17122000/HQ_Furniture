@@ -1,24 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs.User
+namespace Application.DTOs.User;
+
+public class UserCreateDto
 {
-    public class UserCreateDto
-    {
-        [Required]
-        public string FullName { get; set; } = string.Empty;
+    [Required]
+    public string FullName { get; set; } = string.Empty;
 
-        [Required]
-        public string Email { get; set; } = string.Empty;
+    [Required]
+    public string Email { get; set; } = string.Empty;
 
-        [Required]
-        public string PasswordHash { get; set; } = string.Empty;
+    [Required]
+    public string Password { get; set; } = string.Empty;
 
-        public string? Phone { get; set; }
+    public string? Phone { get; set; }
 
-        public string? Address { get; set; }
+    public string? Address { get; set; }
 
-        public string? Avatar { get; set; }
+    public string? Avatar { get; set; }
 
-        public int RoleId { get; set; }
-    }
+    public int RoleId { get; set; }
+
+    public bool IsActive { get; set; } = true;
 }

@@ -17,5 +17,14 @@ namespace Application.Interfaces
         Task UpdateAsync(OrderUpdateDto dto);
 
         Task DeleteAsync(int id);
+        // Workflow
+
+        Task ConfirmAsync(int orderId);
+
+        Task ShippingAsync(int orderId);
+
+        Task CompleteAsync(int orderId);
+
+        Task CancelAsync(int orderId);
     }
 }

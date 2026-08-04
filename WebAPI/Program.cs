@@ -77,6 +77,7 @@ builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
 #endregion
 
@@ -93,7 +94,7 @@ builder.Services.AddScoped<IProductImageService, ProductImageService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
-
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 // JWT (sẽ tạo ở bước tiếp theo)
 builder.Services.AddScoped<IJwtService, JwtService>();
 

@@ -76,5 +76,52 @@ namespace WebAPI.Controllers
 
             return Ok("Order deleted successfully.");
         }
+        [HttpPut("Confirm/{id}")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> Confirm(int id)
+        {
+            await service.ConfirmAsync(id);
+
+            return Ok(new
+            {
+                message = "Order confirmed."
+            });
+        }
+
+        [HttpPut("Shipping/{id}")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> Shipping(int id)
+        {
+            await service.ShippingAsync(id);
+
+            return Ok(new
+            {
+                message = "Order is shipping."
+            });
+        }
+
+        [HttpPut("Complete/{id}")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> Complete(int id)
+        {
+            await service.CompleteAsync(id);
+
+            return Ok(new
+            {
+                message = "Order completed."
+            });
+        }
+
+        [HttpPut("Cancel/{id}")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> Cancel(int id)
+        {
+            await service.CancelAsync(id);
+
+            return Ok(new
+            {
+                message = "Order cancelled."
+            });
+        }
     }
 }

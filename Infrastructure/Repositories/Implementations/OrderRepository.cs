@@ -45,5 +45,67 @@ namespace Infrastructure.Repositories.Implementations
                 .Where(x => x.Status == status)
                 .ToListAsync();
         }
+        public async Task ConfirmAsync(int orderId)
+        {
+            var order = await context.Orders.FindAsync(orderId);
+
+            if (order == null)
+                throw new Exception("Order not found.");
+
+            if (order.Status != "Pending")
+                throw new Exception("Only Pending orders can be confirmed.");
+
+            order.Status = "Confirmed";
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task ShippingAsync(int orderId)
+        {
+            var order = await context.Orders.FindAsync(orderId);
+
+            if (order == null)
+                throw new Exception("Order not found.");
+
+            if (order.Status != "Confirmed")
+                throw new Exception("Only Confirmed orders can be shipped.");
+
+            order.Status = "Shipping";
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task CompleteAsync(int orderId)
+        {
+            var order = await context.Orders.FindAsync(orderId);
+
+            if (order == null)
+                throw new Exception("Order not found.");
+
+            if (order.Status != "Shipping")
+                throw new Exception("Only Shipping orders can be completed.");
+
+            order.Status = "Completed";
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task CancelAsync(int orderId)
+        {
+            var order = await context.Orders.FindAsync(orderId);
+
+            if (order == null)
+                throw new Exception("Order not found.");
+
+            if (order.Status == "Completed")
+                throw new Exception("Completed orders cannot be cancelled.");
+
+            if (order.Status == "Cancelled")
+                throw new Exception("Order already cancelled.");
+
+            order.Status = "Cancelled";
+
+            await context.SaveChangesAsync();
+        }
     }
 }

@@ -134,5 +134,24 @@ namespace Application.Services
 
             await orderRepository.SaveAsync();
         }
+        public async Task ConfirmAsync(int orderId)
+        {
+            await orderRepository.ConfirmAsync(orderId);
+        }
+
+        public async Task ShippingAsync(int orderId)
+        {
+            await orderRepository.ShippingAsync(orderId);
+        }
+
+        public async Task CompleteAsync(int orderId)
+        {
+            await orderRepository.CompleteAsync(orderId);
+        }
+
+        public async Task CancelAsync(int orderId)
+        {
+            await orderRepository.CancelAsync(orderId);
+        }
     }
 }

@@ -11,5 +11,12 @@ namespace Infrastructure.Repositories.Interfaces
         Task<List<Order>> GetByUserAsync(int userId);
 
         Task<List<Order>> GetByStatusAsync(string status);
+        Task ConfirmAsync(int orderId);
+
+        Task ShippingAsync(int orderId);
+
+        Task CompleteAsync(int orderId);
+
+        Task CancelAsync(int orderId);
     }
 }

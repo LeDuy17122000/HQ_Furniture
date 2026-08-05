@@ -20,6 +20,7 @@ namespace Infrastructure.Data
         public DbSet<Category> Categories => Set<Category>();
 
         public DbSet<Product> Products => Set<Product>();
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public DbSet<ProductImage> ProductImages => Set<ProductImage>();
 

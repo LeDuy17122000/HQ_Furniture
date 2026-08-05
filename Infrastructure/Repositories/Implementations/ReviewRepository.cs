@@ -34,7 +34,7 @@ namespace Infrastructure.Repositories.Implementations
             return await context.Reviews
                 .Include(x => x.User)
                 .Include(x => x.Product)
-                .Where(x => x.ProductId == productId)
+                .Where(x => x.ProductId == productId && x.IsApproved)
                 .ToListAsync();
         }
 
@@ -50,13 +50,68 @@ namespace Infrastructure.Repositories.Implementations
         public async Task<double> GetAverageRatingAsync(int productId)
         {
             var reviews = await context.Reviews
-                .Where(x => x.ProductId == productId)
+                .Where(x => x.ProductId == productId && x.IsApproved)
                 .ToListAsync();
 
             if (!reviews.Any())
                 return 0;
 
             return reviews.Average(x => x.Rating);
+        }
+
+        // ==========================
+        // Review Authorization
+        // ==========================
+
+        public async Task<List<Review>> GetPendingAsync()
+        {
+            return await context.Reviews
+                .Include(x => x.User)
+                .Include(x => x.Product)
+                .Where(x => !x.IsApproved)
+                .ToListAsync();
+        }
+
+        public async Task ApproveAsync(int reviewId)
+        {
+            var review = await context.Reviews.FindAsync(reviewId);
+
+            if (review == null)
+                throw new Exception("Review not found.");
+
+            review.IsApproved = true;
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RejectAsync(int reviewId)
+        {
+            var review = await context.Reviews.FindAsync(reviewId);
+
+            if (review == null)
+                throw new Exception("Review not found.");
+
+            context.Reviews.Remove(review);
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<bool> HasPurchasedAsync(int userId, int productId)
+        {
+            return await context.OrderDetails
+                .Include(x => x.Order)
+                .AnyAsync(x =>
+                    x.ProductId == productId &&
+                    x.Order!.UserId == userId &&
+                    x.Order.Status == "Completed");
+        }
+
+        public async Task<bool> HasReviewedAsync(int userId, int productId)
+        {
+            return await context.Reviews
+                .AnyAsync(x =>
+                    x.UserId == userId &&
+                    x.ProductId == productId);
         }
     }
 }

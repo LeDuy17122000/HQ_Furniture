@@ -21,5 +21,19 @@ namespace Application.Interfaces
         Task UpdateAsync(ReviewUpdateDto dto);
 
         Task DeleteAsync(int id);
+
+        // ============================
+        // Review Authorization
+        // ============================
+
+        Task<List<ReviewDto>> GetPendingAsync();
+
+        Task ApproveAsync(int reviewId);
+
+        Task<bool> HasPurchasedAsync(int userId, int productId);
+
+        Task<bool> HasReviewedAsync(int userId, int productId);
+
+        Task RejectAsync(int reviewId);
     }
 }

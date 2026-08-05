@@ -9,18 +9,18 @@ namespace Application.Services
     public class AuthService : IAuthService
     {
         private readonly IUserRepository repository;
-
         private readonly IJwtService jwtService;
-
+        private readonly IRefreshTokenRepository refreshTokenRepository;
         private readonly PasswordHasher<User> passwordHasher;
 
         public AuthService(
             IUserRepository repository,
-            IJwtService jwtService)
+            IJwtService jwtService,
+            IRefreshTokenRepository refreshTokenRepository)
         {
             this.repository = repository;
-
             this.jwtService = jwtService;
+            this.refreshTokenRepository = refreshTokenRepository;
 
             passwordHasher = new PasswordHasher<User>();
         }
@@ -35,17 +35,11 @@ namespace Application.Services
             var user = new User
             {
                 FullName = dto.FullName,
-
                 Email = dto.Email,
-
                 Phone = dto.Phone,
-
                 Address = dto.Address,
-
                 RoleId = 2,
-
                 IsActive = true,
-
                 CreatedDate = DateTime.Now
             };
 
@@ -53,7 +47,6 @@ namespace Application.Services
                 passwordHasher.HashPassword(user, dto.Password);
 
             await repository.AddAsync(user);
-
             await repository.SaveAsync();
 
             return true;
@@ -66,29 +59,39 @@ namespace Application.Services
             if (user == null)
                 return null;
 
-            var result =
-                passwordHasher.VerifyHashedPassword(
-                    user,
-                    user.PasswordHash,
-                    dto.Password);
+            var result = passwordHasher.VerifyHashedPassword(
+                user,
+                user.PasswordHash,
+                dto.Password);
 
             if (result == PasswordVerificationResult.Failed)
                 return null;
 
-            var token = jwtService.GenerateToken(user);
+            // Generate Access Token
+            var accessToken = jwtService.GenerateToken(user);
+
+            // Generate Refresh Token
+            var refreshToken = Guid.NewGuid().ToString("N");
+
+            // Lưu Refresh Token vào Database
+            await refreshTokenRepository.AddAsync(new RefreshToken
+            {
+                UserId = user.UserId,
+                Token = refreshToken,
+                ExpiryDate = DateTime.Now.AddDays(7),
+                IsRevoked = false
+            });
+
+            await refreshTokenRepository.SaveAsync();
 
             return new LoginResponseDto
             {
                 UserId = user.UserId,
-
                 FullName = user.FullName,
-
                 Email = user.Email,
-
                 Role = user.Role?.RoleName ?? "",
-
-                Token = token,
-
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
                 ExpireAt = DateTime.Now.AddMinutes(60)
             };
         }

@@ -13,5 +13,16 @@ namespace Infrastructure.Repositories.Interfaces
         Task<List<Review>> GetByUserAsync(int userId);
 
         Task<double> GetAverageRatingAsync(int productId);
+
+        // Review Authorization
+        Task<List<Review>> GetPendingAsync();
+
+        Task ApproveAsync(int reviewId);
+
+        Task RejectAsync(int reviewId);
+
+        Task<bool> HasPurchasedAsync(int userId, int productId);
+
+        Task<bool> HasReviewedAsync(int userId, int productId);
     }
 }

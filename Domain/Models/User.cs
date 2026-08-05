@@ -43,5 +43,7 @@ namespace Domain.Models
             = new List<Order>();
         public ICollection<Post> Posts { get; set; } = new List<Post>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+        public ICollection<RefreshToken>? RefreshTokens { get; set; }
     }
 }

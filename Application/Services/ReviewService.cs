@@ -77,7 +77,15 @@ namespace Application.Services
 
         public async Task AddAsync(ReviewCreateDto dto)
         {
+            if (!await repository.HasPurchasedAsync(dto.UserId, dto.ProductId))
+                throw new Exception("You have not purchased this product.");
+
+            if (await repository.HasReviewedAsync(dto.UserId, dto.ProductId))
+                throw new Exception("You have already reviewed this product.");
+
             var review = mapper.Map<Review>(dto);
+
+            review.IsApproved = false;
 
             await repository.AddAsync(review);
 
@@ -108,6 +116,37 @@ namespace Application.Services
             await repository.DeleteAsync(review);
 
             await repository.SaveAsync();
+        }
+
+        // =========================
+        // REVIEW AUTHORIZATION
+        // =========================
+
+        public async Task<List<ReviewDto>> GetPendingAsync()
+        {
+            var reviews = await repository.GetPendingAsync();
+
+            return mapper.Map<List<ReviewDto>>(reviews);
+        }
+
+        public async Task ApproveAsync(int reviewId)
+        {
+            await repository.ApproveAsync(reviewId);
+        }
+
+        public async Task RejectAsync(int reviewId)
+        {
+            await repository.RejectAsync(reviewId);
+        }
+
+        public async Task<bool> HasPurchasedAsync(int userId, int productId)
+        {
+            return await repository.HasPurchasedAsync(userId, productId);
+        }
+
+        public async Task<bool> HasReviewedAsync(int userId, int productId)
+        {
+            return await repository.HasReviewedAsync(userId, productId);
         }
     }
 }
